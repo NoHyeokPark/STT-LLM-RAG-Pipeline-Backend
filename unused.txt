@@ -1,0 +1,54 @@
+# READ: 모든 학생 조회
+@router.get("/", response_description="List all students", response_model=List[UserModel])
+async def list_students(    skip: int = Query(0,
+                       title="Skip",
+                       description="건너뛸 데이터의 수 (페이지네이션 시작점).",
+                       ge=0), # ge=0: 0보다 크거나 같은 값만 허용
+                            limit: int = Query(10,
+                       title="Limit",
+                       description="한 페이지에 가져올 최대 데이터의 수.",
+                       ge=1, # ge=1: 1 이상의 값만 허용
+                       le=100) # le=100: 100 이하의 값만 허용
+):
+    # .skip()과 .limit()을 find()에 연결
+    cursor = student_collection.find().skip(skip).limit(limit)
+    students = [user_helper(student) async for student in cursor]
+    return students
+
+
+# READ: 특정 학생 조회
+@router.get("/{id}", response_description="Get a single student", response_model=UserModel)
+async def show_student(id: str):
+    if (student := await student_collection.find_one({"id": id})) is not None:
+        return user_helper(student)
+    raise HTTPException(status_code=404, detail=f"Student {id} not found")
+
+# UPDATE: 학생 정보 수정
+@router.put("/{id}", response_description="Update a student", response_model=UserModel)
+async def update_student(id: str, student: UpdateUserModel = Body(...)):
+    student_data = {k: v for k, v in student.dict().items() if v is not None}
+
+    # 업데이트할 내용이 하나 이상 있을 경우
+    if len(student_data) >= 1:
+        # 조건절을 {"_id": ObjectId(id)} 에서 {"id": id} 로 변경
+        update_result = await student_collection.update_one(
+            {"id": id}, {"$set": student_data}
+        )
+
+        # 업데이트 성공 시, 업데이트된 문서를 찾아 반환
+        if update_result.modified_count == 1:
+            if (
+                updated_student := await student_collection.find_one({"id": id})
+            ) is not None:
+                return user_helper(updated_student)
+
+    # 업데이트할 내용이 없거나, 업데이트가 실패했으나 문서는 존재하는 경우
+    # 기존 문서를 찾아 반환
+    if (
+        existing_student := await student_collection.find_one({"id": id})
+    ) is not None:
+        return user_helper(existing_student)
+    
+    # 문서를 찾지 못한 경우 404 에러 발생
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Student with id {id} not found")
+    
