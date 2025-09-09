@@ -60,7 +60,7 @@ def user_helper(student) -> dict:
 
 # READ: 모든 학생 조회
 @router.get("/", response_description="List all users", response_model=List[UserModel])
-async def list_students(    skip: int = Query(0,
+async def list_all(    skip: int = Query(0,
                        title="Skip",
                        description="건너뛸 데이터의 수 (페이지네이션 시작점).",
                        ge=0), # ge=0: 0보다 크거나 같은 값만 허용
@@ -137,7 +137,7 @@ async def login_user(user: UserModel = Body(...)): # <--- 2. 이름 일관성 �
 
 # DELETE: 사용자 정보 삭제
 @router.delete("/", response_description="Delete a user")
-async def delete_student(current_user: Annotated[dict, Depends(get_current_user)]): # -> Response 타입 힌트 제거 또는 Response 임포트
+async def delete_user(current_user: Annotated[dict, Depends(get_current_user)]): # -> Response 타입 힌트 제거 또는 Response 임포트
     user_id = current_user["id"]  # dict에서 id 가져오기
 
     delete_result = await student_collection.delete_one({"id": user_id})
