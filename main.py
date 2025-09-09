@@ -3,11 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers import members, whispers
 import nest_asyncio
 import uvicorn
-import os
-import imageio_ffmpeg as iio_ffmpeg
 
-ffmpeg_path = iio_ffmpeg.get_ffmpeg_exe()
-os.environ["PATH"] += os.pathsep + os.path.dirname(ffmpeg_path)
+
 app = FastAPI()
 
 app.include_router(members.router, tags=["Members"], prefix="/members")

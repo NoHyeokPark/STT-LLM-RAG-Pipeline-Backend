@@ -8,7 +8,7 @@ from typing import Annotated
 import jwt
 import bcrypt
 from pymongo import MongoClient
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # 이 파일 내에서는 데이터베이스와 모델을 직접 임포트합니다.
 from database import student_collection
@@ -41,7 +41,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         raise credentials_exception
 
     # DB에서 사용자 정보 조회
-    user = student_collection.find_one({"id": username})
+    user = await student_collection.find_one({"id": username})
     if user is None:
         raise credentials_exception
     
@@ -78,14 +78,13 @@ async def list_students(    skip: int = Query(0,
 # CREATE: 새 학생 추가
 @router.post("/register",
              response_description="Add new user",
-             response_model=UserModel,
              status_code=status.HTTP_201_CREATED) # <--- 1. 상태 코드 여기로 이동
 async def create_user(user: UserModel = Body(...)): # <--- 2. 이름 일관성 있게 변경
     try:
         password = user.pw  # 평문 비밀번호
             # 비밀번호 해싱
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        user.pw = hashed_password  # 해싱된 비밀번호로 교체
+        user.pw = hashed_password.decode('utf-8')  # 해싱된 비밀번호로 교체
         user_dict = user.dict()
         new_user = await student_collection.insert_one(user_dict)
 
@@ -102,8 +101,7 @@ async def create_user(user: UserModel = Body(...)): # <--- 2. 이름 일관성 �
 # login: 사용자 로그인
 @router.post("/login",
              response_description="Login user",
-             response_model=UserModel,
-             status_code=status.HTTP_201_CREATED) # <--- 1. 상태 코드 여기로 이동
+             status_code=status.HTTP_202_ACCEPTED) # <--- 1. 상태 코드 여기로 이동
 async def login_user(user: UserModel = Body(...)): # <--- 2. 이름 일관성 있게 변경
     try:
         # 클라이언트로부터 username, password 받기
@@ -111,17 +109,18 @@ async def login_user(user: UserModel = Body(...)): # <--- 2. 이름 일관성 �
         password = user.pw
 
         if not (username and password):
-            return {"error": "아이디와 비밀번호를 모두 입력해주세요."}
+            raise HTTPException(status_code=400, detail="아이디와 비밀번호를 모두 입력해주세요.")
 
         # 데이터베이스에서 사용자 찾기
-        user = student_collection.find_one({"id": username})
-
+        user = await student_collection.find_one({"id": username})
+        if not user:
+            raise HTTPException(status_code=404, detail="사용자가 존재하지 않습니다.")
         # 사용자가 존재하고, 비밀번호가 일치하는지 확인
-        if user and bcrypt.checkpw(password.encode('utf-8'), user['pw']):
+        if bcrypt.checkpw(password.encode('utf-8'), user['pw'].encode('utf-8')):
             # JWT 페이로드(Payload) 설정
             payload = {
                 'id': username,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # 토큰 만료 시간 (1시간)
+                'exp': datetime.now() + timedelta(hours=1)  # 토큰 만료 시간 (1시간)
             }
             # JWT 생성
             token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
@@ -130,21 +129,23 @@ async def login_user(user: UserModel = Body(...)): # <--- 2. 이름 일관성 �
 
         else:
             # 사용자가 없거나 비밀번호가 틀린 경우
-            return {'error': '아이디 또는 비밀번호가 일치하지 않습니다.'}
+            raise HTTPException(status_code=401, detail="아이디 또는 비밀번호가 일치하지 않습니다.")
 
     except Exception as e:
         return {'error': str(e)}
 
 
 # DELETE: 사용자 정보 삭제
-@router.delete("/delete", response_description="Delete a user")
+@router.delete("/", response_description="Delete a user")
 async def delete_student(current_user: Annotated[dict, Depends(get_current_user)]): # -> Response 타입 힌트 제거 또는 Response 임포트
-    # 조건절을 {"_id": ObjectId(id)} 에서 {"id": id} 로 변경
-    delete_result = await student_collection.delete_one({"id": current_user.id})
+    user_id = current_user["id"]  # dict에서 id 가져오기
 
-    # 삭제 성공 시 204 No Content 응답
+    delete_result = await student_collection.delete_one({"id": user_id})
+
     if delete_result.deleted_count == 1:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
     
-    # 삭제할 문서를 찾지 못한 경우 404 에러 발생
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Student with id {id} not found")
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, 
+        detail=f"Student with id {user_id} not found"
+    )

@@ -9,6 +9,7 @@ import traceback
 import os
 import httpx
 import imageio_ffmpeg as iio_ffmpeg
+from pinecone_conection import RAG_search
 
 router = APIRouter()
 LLM_URL = "https://172.31.57.143:8010"
