@@ -102,11 +102,11 @@ async def create_user(user: UserModel = Body(...)): # <--- 2. 이름 일관성 �
 @router.post("/login",
              response_description="Login user",
              status_code=status.HTTP_202_ACCEPTED) # <--- 1. 상태 코드 여기로 이동
-async def login_user(user: UserModel = Body(...)): # <--- 2. 이름 일관성 있게 변경
+async def login_user(data: UserModel = Body(...)): # <--- 2. 이름 일관성 있게 변경
     try:
         # 클라이언트로부터 username, password 받기
-        username = user.id
-        password = user.pw
+        username = data.id
+        password = data.pw
 
         if not (username and password):
             raise HTTPException(status_code=400, detail="아이디와 비밀번호를 모두 입력해주세요.")
@@ -125,7 +125,7 @@ async def login_user(user: UserModel = Body(...)): # <--- 2. 이름 일관성 �
             # JWT 생성
             token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
-            return {"access_token": token, "token_type": "bearer"}
+            return {"access_token": token, "token_type": "bearer", "name": user["name"]}
 
         else:
             # 사용자가 없거나 비밀번호가 틀린 경우

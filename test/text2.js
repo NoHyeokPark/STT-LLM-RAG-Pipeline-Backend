@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const FormData = require('form-data');
 
-const API_ENDPOINT = 'https://172.31.57.147:8001/whispers/process_video';
+const API_ENDPOINT = 'https://172.31.57.147:8001/whispers/process_video2';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const FILE_PATH = "C:/ai_project01/uploaded_video/0908.WAV"; // 예: 'C:/Users/YourUser/Videos/test.mp4'

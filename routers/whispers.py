@@ -10,6 +10,7 @@ import os
 import httpx
 import imageio_ffmpeg as iio_ffmpeg
 from pinecone_conection import RAG_search
+import asyncio
 
 router = APIRouter()
 LLM_URL = "https://172.31.57.143:8010"
@@ -54,8 +55,14 @@ async def process_video2(file: UploadFile = File(...)):
                 # 비동기 GET 요청 보내기
                 response = await client.post(f"{LLM_URL}/process_llm", json={'text': transcribed_text}, timeout=300.0)
                 response.raise_for_status()
-
-                print(response.json())
+                print('✅ LLM 서버 응답 성공:')
+                data = response.json()
+                print(data)
+                report = await asyncio.to_thread(RAG_search, data['final'], 3, "arXiv")
+                pdf_link = [hit['_id'] for hit in report['result']['hits']]
+                print("🔍 RAG 검색 결과:"
+                      , pdf_link)
+                await client.post(f"{LLM_URL}/process_llm2", json={'text': data['final'], 'pdf':pdf_link}, timeout=300.0)
             except httpx.TimeoutException as e:
                 # 타임아웃 에러를 명확하게 로깅하거나 반환
                 print(f"Request timed out: {e}")
