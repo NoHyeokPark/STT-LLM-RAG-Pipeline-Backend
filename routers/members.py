@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 
 # 이 파일 내에서는 데이터베이스와 모델을 직접 임포트합니다.
 from database import student_collection
-from models import UpdateUserModel, UserModel
+from models import UpdateUserModel, UserModel, PasswordUpdate
 
 # APIRouter 인스턴스 생성
 router = APIRouter()
@@ -58,6 +58,48 @@ def user_helper(student) -> dict:
         "pw": student["pw"],
     }
 
+@router.get("/me", status_code=status.HTTP_200_OK)
+async def read_current_user(token: str = Depends(get_current_user)):
+    # 여기서 토큰 검증 후 사용자 정보 반환
+    
+    return token
+
+# UPDATE: 현재 로그인한 사용자의 비밀번호 변경
+@router.put("/me", response_description="Change user's password")
+async def update_password(
+    passwords: PasswordUpdate = Body(...),
+    # `get_current_user`로부터 비밀번호가 제외된 사용자 정보를 받습니다.
+    current_user: dict = Depends(get_current_user)
+):
+    # 1. `get_current_user`를 통해 인증은 완료되었으므로,
+    #    전달받은 id로 DB에서 '비밀번호를 포함한' 전체 사용자 정보를 다시 조회합니다.
+    user_id = current_user["id"]
+    user_in_db = await student_collection.find_one({"id": user_id})
+
+    # (방어 코드) 혹시 모를 경우를 대비해 사용자가 DB에 있는지 한번 더 확인
+    if not user_in_db:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    # 2. DB에서 가져온 해시 비밀번호와 사용자가 입력한 '이전 비밀번호'를 비교합니다.
+    stored_password_hash = user_in_db['pw'].encode('utf-8')
+    if not bcrypt.checkpw(passwords.old_password.encode('utf-8'), stored_password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="이전 비밀번호가 일치하지 않습니다."
+        )
+
+    # 3. '바꿀 비밀번호'를 bcrypt로 해싱합니다.
+    hashed_new_password = bcrypt.hashpw(passwords.new_password.encode('utf-8'), bcrypt.gensalt())
+    
+    # 4. DB에 새로운 해시 비밀번호를 업데이트합니다.
+    await student_collection.update_one(
+        {"id": user_id},
+        {"$set": {"pw": hashed_new_password.decode('utf-8')}}
+    )
+
+    return {"message": "비밀번호가 성공적으로 변경되었습니다."}
+
+
 # READ: 모든 학생 조회
 @router.get("/", response_description="List all users", response_model=List[UserModel])
 async def list_all(    skip: int = Query(0,
@@ -75,6 +117,7 @@ async def list_all(    skip: int = Query(0,
     students = [user_helper(student) async for student in cursor]
     return students
 
+
 # CREATE: 새 학생 추가
 @router.post("/register",
              response_description="Add new user",
@@ -91,6 +134,8 @@ async def create_user(user: UserModel = Body(...)): # <--- 2. 이름 일관성 �
         # 3. 불필요한 find_one 제거하고 직접 응답 구성
         # user_helper가 ObjectId를 str으로 변환한다고 가정
         created_user = await student_collection.find_one({"_id": new_user.inserted_id})
+        if created_user is None:
+            raise HTTPException(status_code=404, detail="User could not be created")
         return {'result': 'success', 'message': '회원가입이 완료되었습니다.'}
 
     except DuplicateKeyError:

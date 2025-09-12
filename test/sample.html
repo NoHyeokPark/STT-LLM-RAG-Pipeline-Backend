@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>오늘 회의 요약 + RAG 참고 자료</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial; margin: 24px; color:#0b1520; }
+    h1,h2,h3 { margin: 0 0 10px; }
+    .muted { color:#6b7a90; }
+    .kpi { display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin:12px 0 18px; }
+    .kpi .card { border:1px solid #E6E9EF; border-radius:12px; padding:12px; background:#f9fbfd; }
+    .kpi .num { font-weight:700; font-size:18px; color:#0a7f3f; }
+    .src a { color:#295ea6; text-decoration:none; }
+    .pill { display:inline-block; padding:3px 8px; border-radius:999px; font-size:12px; border:1px solid #E6E9EF; background:#f6f8fb; color:#46566e; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+    .box { border:1px solid #E6E9EF; border-radius:12px; padding:12px; background:#ffffff; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th, td { text-align:left; border-bottom:1px solid #E6E9EF; padding:10px; vertical-align:top; }
+    img { border-radius:8px; }
+    .note { font-size:12px; color:#6b7a90; margin:6px 0 12px; }
+    ul { margin:8px 0 0 18px; }
+    .warn { color:#a55600; }
+    .risk { color:#a02b2b; }
+    .ok { color:#0a7f3f; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace; }
+  </style>
+</head>
+<body>
+  <h2>오늘 회의 요약 + RAG 참고 자료</h2>
+  <p><b>핵심 요약:</b><br>
+    곡물 가격 상승, 국내 생산량 부족, 식량 낭비 및 분배 불균형 등 식량 문제를 주제로 논의하고,
+    자급률 향상과 지속 가능한 식량 체계 구축을 목표로 하며, 스마트팜, 수경재배, AI 기반 농업,
+    식량 낭비 줄이기 캠페인, 농업 인식 개선 및 젊은 세대 참여, 기후강한 품종 개발과 유전자 편집 연구 등을 해결방안으로 제시했다.
+  </p>
+  <!-- RAG 인젝션: 정량 근거 -->
+  <h3>정량 근거 (RAG)</h3>
+  <div class="kpi">
+    <div class="card">
+      <div class="num">국내 곡물자급률: <span class="mono">{{자급률_최근연도_퍼센트}}%</span></div>
+      <div class="src muted">출처: <a href="{{자급률_출처_URL}}" target="_blank" rel="noopener">공식 통계</a></div>
+    </div>
+    <div class="card">
+      <div class="num">연간 음식물 쓰레기: <span class="mono">{{음쓰_연간_톤}}만 톤</span></div>
+      <div class="src muted">출처: <a href="{{음쓰_출처_URL}}" target="_blank" rel="noopener">정부/지자체 보고서</a></div>
+    </div>
+    <div class="card">
+      <div class="num">수경재배 물 사용 절감: <span class="mono">{{수경_물절감_퍼센트}}%</span></div>
+      <div class="src muted">출처: <a href="{{Hydroponics_PMC_URL}}" target="_blank" rel="noopener">Hydroponics 리뷰</a></div>
+    </div>
+    <div class="card">
+      <div class="num">스마트팜 도입 수확량 증가: <span class="mono">{{스마트팜_수확증가_퍼센트}}%</span></div>
+      <div class="src muted">출처: <a href="{{스마트팜_리뷰_URL}}" target="_blank" rel="noopener">스마트농업 리뷰/메타분석</a></div>
+    </div>
+  </div>
+  <h3>관련 최신 뉴스 & 논문</h3>
+  <h1 style="font-size:20px; margin-top:6px;">관련 최신 뉴스</h1>
+  <a href="https://farmonaut.com/asia/agriculture-in-korea-2025-smart-farming-challenges?utm_source=chatgpt.com" target="_blank">
+    <img src="https://farmonaut.com/wp-content/uploads/2025/05/smartfarm.jpg" alt="스마트팜 기사" width="300">
+  </a><br>
+  <small class="muted">스마트팜 기술이 한국 농업을 바꾼다… 토지 부족·기후 변화 대응 전략</small>
+  <br><br>
+  <a href="https://www.mdpi.com/2071-1050/16/2/854?utm_source=chatgpt.com" target="_blank">
+    <img src="https://www.mdpi.com/img/logo_mdpi.png" alt="식량 낭비 정책 기사" width="300">
+  </a><br>
+  <small class="muted">한국 음식물 쓰레기 정책과 재활용 전략</small>
+  <br><br>
+  <a href="https://arxiv.org/abs/2503.13528?utm_source=chatgpt.com" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/ArXiv_logo.png" alt="수경재배 연구" width="300">
+  </a><br>
+  <small class="muted">IoT 기반 수경재배와 글로벌 식량 안보</small>
+  <hr style="margin:20px 0;">
+  <h1 style="font-size:20px;">관련 논문</h1>
+  <div class="note">※ 링크 자리에는 실제 URL을 넣어 사용하세요. (예: 스프링거링크, arXiv, PMC, ScienceDirect)</div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:26%">제목</th>
+        <th style="width:32%">요약 / 주요 내용</th>
+        <th style="width:22%">활용 포인트</th>
+        <th style="width:20%">한계점</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          Revolutionizing agriculture: a review of smart farming technologies for a sustainable future (M Raj et al., 2025)<br>
+          <span class="src muted">출처: <a href="<!-- TODO: 스프링거 URL -->" target="_blank" rel="noopener">스프링거링크</a></span>
+        </td>
+        <td>AI, IoT, 드론, 로봇, 딥러닝 등 다양한 기술을 통합하여 자원 활용 최적화하고 생산성 향상. 예: 드론으로 물/비료 사용량 절감, AI로 수확 예측 개선.</td>
+        <td>예측모델·자동화·자원 최적화 → ‘스마트팜/AI기반 농업’과 정합. KPI(물 절감, 수확↑)를 수치로 끌어오기 적합.</td>
+        <td>초기 비용, 기술 의존성, 농가 기술 숙련도, 데이터 수집·관리 비용.</td>
+      </tr>
+      <tr>
+        <td>
+          Internet of Things-Based Smart Precision Farming in Soilless Agriculture: Opportunities and Challenges for Global Food Security (Dutta et al., 2025)<br>
+          <span class="src muted">출처: <a href="<!-- TODO: arXiv URL -->" target="_blank" rel="noopener">arXiv</a></span>
+        </td>
+        <td>수경/무토경 환경에서 IoT로 영양·수분 제어 및 자동 환경 관리. 생산 안정성 확보, 자원 효율 개선.</td>
+        <td>비전토 재배 + 정밀농업 조합을 파일럿에 적용. 물·영양 절감률 지표화.</td>
+        <td>에너지 비용, 초기 투자, 유지관리·인프라 요구 높음.</td>
+      </tr>
+      <tr>
+        <td>
+          Trend and pattern of Agri-food Waste, Environmental Sustainability etc. (M Roy, 2025)<br>
+          <span class="src muted">출처: <a href="<!-- TODO: 스프링거 URL -->" target="_blank" rel="noopener">스프링거링크</a></span>
+        </td>
+        <td>공급망 전주기 식량낭비, 순환경제 원칙 적용 필요. 정책·소비자·기술 통합 강조.</td>
+        <td>캠페인·정책·인센티브 설계. 메탄저감·배출량 지표 연결.</td>
+        <td>정성 중심 연구 다수. 대규모 기술 실험·확장성 사례 부족.</td>
+      </tr>
+      <tr>
+        <td>
+          Hydroponics: current trends in sustainable crop production (G. Rajaseger et al., 2023)<br>
+          <span class="src muted">출처: <a href="<!-- TODO: PMC URL -->" target="_blank" rel="noopener">PMC</a></span>
+        </td>
+        <td>LED, 재순환 수계, 병해 관리, 영양 용액 최적화 등 최신 동향과 절감률 데이터.</td>
+        <td>작물별 LED·영양 조합 가이드. 수자원 절감 수치 근거.</td>
+        <td>기후 제어 비용·에너지 소비, 초기설비비, 단가 경쟁력.</td>
+      </tr>
+      <tr>
+        <td>
+          Artificial intelligence for fostering sustainable agriculture (K Kusumavathi et al., 2025)<br>
+          <span class="src muted">출처: <a href="<!-- TODO: ScienceDirect URL -->" target="_blank" rel="noopener">ScienceDirect</a></span>
+        </td>
+        <td>모니터링·자원 최적화·생육 예측 등 AI 모듈의 역할과 적용 지표.</td>
+        <td>우선 도입 AI 기능 선정, 효과 지표(KPI) 설계.</td>
+        <td>학습데이터 확보 난도, 현장 노이즈, 예측 오차, 수용성 편차.</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>

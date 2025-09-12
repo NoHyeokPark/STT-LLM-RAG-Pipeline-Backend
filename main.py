@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Body, HTTPException, status, Response, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import members, whispers
+from routers import members, whispers, reports
 import nest_asyncio
 import uvicorn
 
@@ -9,6 +9,7 @@ app = FastAPI()
 
 app.include_router(members.router, tags=["Members"], prefix="/members")
 app.include_router(whispers.router, tags=["Whispers"], prefix="/whispers")
+app.include_router(reports.router, tags=["Reports"], prefix="/reports")
 
 origins = [
     "http://localhost:3000",  # 클라이언트 주소

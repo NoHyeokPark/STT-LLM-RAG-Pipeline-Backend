@@ -57,12 +57,19 @@ async def process_video2(file: UploadFile = File(...)):
                 response.raise_for_status()
                 print('✅ LLM 서버 응답 성공:')
                 data = response.json()
-                print(data)
                 report = await asyncio.to_thread(RAG_search, data['final'], 3, "arXiv")
-                pdf_link = [hit['_id'] for hit in report['result']['hits']]
-                print("🔍 RAG 검색 결과:"
-                      , pdf_link)
-                await client.post(f"{LLM_URL}/process_llm2", json={'text': data['final'], 'pdf':pdf_link}, timeout=300.0)
+                pdf_link = [hit['fields']['link'] for hit in report['result']['hits']]
+                pdf_title = [hit['fields']['title'] for hit in report['result']['hits']]
+                news = await asyncio.to_thread(RAG_search, data['final'], 5, "news")
+                news_link = [hit['fields']['link'] for hit in news['result']['hits']]
+                news_title = [hit['fields']['title'] for hit in news['result']['hits']]
+                res = await client.post(f"{LLM_URL}/process_llm2", json={'text': transcribed_text, 'summary':data['final'],
+                                                                   'pdf_link':pdf_link, 'pdf_title':pdf_title,
+                                                                   'news_link':news_link, 'news_title':news_title}, timeout=300.0)
+                res.raise_for_status()
+                print('✅ LLM 서버 응답 성공:')
+                final_data = res.json()
+                print(final_data)
             except httpx.TimeoutException as e:
                 # 타임아웃 에러를 명확하게 로깅하거나 반환
                 print(f"Request timed out: {e}")

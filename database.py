@@ -11,3 +11,5 @@ database = client.meeting
 
 # 컬렉션 선택
 student_collection = database.get_collection("members")
+html_collection = database.get_collection("html")
+html_collection.create_index("participants")
