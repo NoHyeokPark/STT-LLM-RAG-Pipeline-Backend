@@ -21,6 +21,16 @@ class UpdateUserModel(BaseModel):
     id: Optional[str]
     pw: Optional[str]
 
+class PasswordUpdate(BaseModel):
+    old_password: str = Field(...)
+    new_password: str = Field(...)
+    class Config:
+        schema_extra = {
+            "example": {
+                "old_password": "John Doe",
+                "inew_password": "Computer"
+            }
+        }
 
 class htmlModel(BaseModel):
     title: str = Field(...)
