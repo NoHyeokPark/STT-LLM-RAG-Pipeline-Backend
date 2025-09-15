@@ -6,7 +6,7 @@ const FormData = require('form-data');
 const API_ENDPOINT = 'https://172.31.57.147:8001/whispers/process_video2';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-const FILE_PATH = "C:/ai_project01/uploaded_video/0908.WAV"; // 예: 'C:/Users/YourUser/Videos/test.mp4'
+const FILE_PATH = "C:/ai_project01/uploaded_video/0915.WAV"; // 예: 'C:/Users/YourUser/Videos/test.mp4'
 
 /**
  * 동영상 파일을 지정된 API 엔드포인트로 업로드하는 함수
@@ -29,6 +29,7 @@ async function uploadVideo(url, filePath) {
     // FastAPI의 'UploadFile' 매개변수 이름('file')과 키를 일치시켜야 합니다.
     const fileName = path.basename(filePath);
     form.append('file', fs.createReadStream(filePath), fileName);
+    console.log(`파일을 form-data에 추가했습니다: ${fileName}`);
 
     try {
         // 4. Axios를 사용하여 POST 요청을 보냅니다.

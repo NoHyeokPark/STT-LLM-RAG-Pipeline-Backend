@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
+from pathlib import Path
 
 class UserModel(BaseModel):
     name: str = Field(...)
@@ -47,4 +48,17 @@ class htmlModel(BaseModel):
                 "participants": ["asd@mail.com", "zxc@mail.com", "qwe@mail.com"]
             }
         }
-        
+
+class TranscriptRequest(BaseModel):
+    directory_name: str
+
+class LocalFileAdapter:
+    """파일 경로를 UploadFile 객체처럼 보이게 만드는 래퍼 클래스"""
+    def __init__(self, path: Path):
+        self._path = path
+        self.filename = path.name
+
+    async def read(self) -> bytes:
+        # 비동기 파일 라이브러리(aiofiles)를 사용하면 더 효율적이지만,
+        # 표준 라이브러리만으로도 호환성을 맞출 수 있습니다.
+        return self._path.read_bytes()            
