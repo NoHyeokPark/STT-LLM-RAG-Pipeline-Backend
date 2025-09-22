@@ -14,7 +14,8 @@ import asyncio
 from util import format_timestamp
 from pathlib import Path  # 경로 처리를 위한 모듈 추가
 from models import TranscriptRequest, LocalFileAdapter
-
+from database import insert_html_document
+import subprocess
 
 
 router = APIRouter()
@@ -98,10 +99,15 @@ async def process_videos_from_directory(request: TranscriptRequest):
 
         # 3. 각 파일을 개별적으로 전사
         all_segments = []
+        participants = []
         for i, video_path in enumerate(video_files):
             print(f"파일 {i+1}/{len(video_files)} 처리 중: {video_path.name}")
+            filename_stem = video_path.stem  # 확장자를 제외한 파일명
+            parts = filename_stem.split('_')
+            username = parts[0] if len(parts) > 0 else filename_stem
+            if username not in participants:
+                participants.append(username)
             
-            # transcribe_single_file 함수가 이제 파일 '경로'를 인자로 받음
             segments, error = await transcribe_single_file(LocalFileAdapter(video_path))
             if error:
                 raise HTTPException(status_code=500, detail=f"파일 {video_path.name} 처리 중 오류: {error}")
@@ -155,7 +161,16 @@ async def process_videos_from_directory(request: TranscriptRequest):
                 res.raise_for_status()
                 print('✅ LLM 서버 응답 성공:')
                 final_data = res.json()
-                print(final_data)
+                print(final_data['status'])
+                # DB에 저장
+                html_dict = {
+                    "title": f"회의록_{request.directory_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                    "content": final_data['report'],
+                    "uploadedAt": request.date,  # insert_html_document 함수에서 현재 시간으로 설정
+                    "participants": participants
+                }
+                created_html = await insert_html_document(html_dict)
+                print(f"DB에 회의록 저장 완료: {created_html.get('_id')}")
             except httpx.TimeoutException as e:
                 # 타임아웃 에러를 명확하게 로깅하거나 반환
                 print(f"Request timed out: {e}")
@@ -251,7 +266,8 @@ async def process_video2(file: UploadFile = File(...)):
                 res.raise_for_status()
                 print('✅ LLM 서버 응답 성공:')
                 final_data = res.json()
-                print(final_data)
+                print(final_data['status'])
+
             except httpx.TimeoutException as e:
                 # 타임아웃 에러를 명확하게 로깅하거나 반환
                 print(f"Request timed out: {e}")

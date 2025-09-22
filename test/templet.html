@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>회의 요약 + RAG 참고 자료</title>
+  <style>
+    /* ============================================
+      Designed by a Senior Frontend Designer
+      - Date: 2025-09-16
+      - Focus: Readability, Professionalism, Modern UI
+      ============================================
+    */
+
+    /* --- Base & Typography --- */
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif;
+      margin: 0;
+      padding: 24px;
+      color: #1a202c; /* 좀 더 부드러운 검은색 */
+      background-color: #f7fafc; /* 은은한 배경색 */
+      line-height: 1.6;
+    }
+
+    .report-container {
+      max-width: 900px;
+      margin: 24px auto;
+      padding: 32px;
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    h2, h3 {
+      font-weight: 700;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #2d3748;
+    }
+
+    h2 {
+      font-size: 1.75rem; /* 28px */
+    }
+
+    h3 {
+      font-size: 1.25rem; /* 20px */
+    }
+
+    p {
+      margin-bottom: 16px;
+    }
+
+    a {
+      color: #2b6cb0;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* --- Action Items --- */
+    .action-items {
+      background-color: #edf2f7;
+      border-left: 4px solid #4299e1;
+      padding: 16px 20px;
+      margin: 24px 0;
+      border-radius: 8px;
+    }
+    .action-items h4 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      color: #2d3748;
+    }
+    .action-items ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+    .action-items li {
+      margin-bottom: 8px;
+    }
+    .action-items li:last-child {
+      margin-bottom: 0;
+    }
+
+    /* --- News Grid --- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      background: #ffffff;
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2b6cb0;
+      margin-bottom: 8px;
+    }
+    .card-content {
+      font-size: 0.9rem;
+      color: #4a5568;
+    }
+
+    /* --- Papers Table --- */
+    .table-container {
+      overflow-x: auto; /* 작은 화면에서 테이블 가로 스크롤 */
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+    th, td {
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 16px;
+      vertical-align: top;
+    }
+    thead {
+      background-color: #edf2f7;
+    }
+    th {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #4a5568;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    tbody tr:nth-of-type(even) {
+      background-color: #f7fafc;
+    }
+    tbody tr:hover {
+      background-color: #e2e8f0;
+    }
+
+    /* --- Footer Note --- */
+    .note {
+      font-size: 0.8rem;
+      color: #718096;
+      margin-top: 24px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>오늘 회의 요약</h2>
+  <p>{SUMMARY}</p>
+  {ACTIONS}
+
+  <h3>관련 최신 뉴스 (카드형 링크)</h3>
+  <div class="grid">
+    {NEWS}
+  </div>
+
+  <h3>관련 논문(PDF)</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:34%">제목/링크</th>
+        <th style="width:28%">요약 / 주요 내용</th>
+        <th style="width:20%">활용 포인트</th>
+        <th style="width:18%">한계점</th>
+      </tr>
+    </thead>
+    <tbody>
+      {PAPERS}
+    </tbody>
+  </table>
+
+  <div class="note">생성 시각: {NOW}</div>
+</body>
+</html>
