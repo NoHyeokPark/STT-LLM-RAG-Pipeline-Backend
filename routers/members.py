@@ -9,6 +9,8 @@ import jwt
 import bcrypt
 from pymongo import MongoClient
 from datetime import datetime, timedelta
+from fastapi.responses import JSONResponse
+
 
 # 이 파일 내에서는 데이터베이스와 모델을 직접 임포트합니다.
 from database import student_collection
@@ -146,7 +148,7 @@ async def create_user(user: UserModel = Body(...)): # <--- 2. 이름 일관성 �
 # login: 사용자 로그인
 @router.post("/login",
              response_description="Login user",
-             status_code=status.HTTP_202_ACCEPTED) # <--- 1. 상태 코드 여기로 이동
+             status_code=status.HTTP_200_OK) # <--- 1. 상태 코드 여기로 이동
 async def login_user(data: UserModel = Body(...)): # <--- 2. 이름 일관성 있게 변경
     try:
         # 클라이언트로부터 username, password 받기

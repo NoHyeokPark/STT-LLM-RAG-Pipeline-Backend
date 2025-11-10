@@ -15,14 +15,18 @@ from util import format_timestamp
 from pathlib import Path  # 경로 처리를 위한 모듈 추가
 from models import TranscriptRequest, LocalFileAdapter
 from database import insert_html_document
-import subprocess
+from wiki import wiki_data_load
 
 
 router = APIRouter()
-LLM_URL = "https://172.31.57.143:8010"
+LLM_URL = "https://sliceable-maryanne-unforcedly.ngrok-free.dev"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 UPLOAD_BASE_DIR = Path("uploads")
 model = whisper_model.load_model("large-v3-turbo", device=device)
+
+headers = {
+    "ngrok-skip-browser-warning": "true"
+}
 
 @router.get("/")
 async def hello():
@@ -145,7 +149,7 @@ async def process_videos_from_directory(request: TranscriptRequest):
         async with httpx.AsyncClient(verify=False) as client:
             try:
                 # 비동기 GET 요청 보내기
-                response = await client.post(f"{LLM_URL}/process_llm", json={'text': transcribed_text}, timeout=300.0)
+                response = await client.post(f"{LLM_URL}/process_llm", json={'text': transcribed_text}, headers=headers, timeout=300.0)
                 response.raise_for_status()
                 print('✅ LLM 서버 응답 성공:')
                 data = response.json()
@@ -155,9 +159,12 @@ async def process_videos_from_directory(request: TranscriptRequest):
                 news = await asyncio.to_thread(RAG_search, data['final'], 5, "news")
                 news_link = [hit['fields']['link'] for hit in news['result']['hits']]
                 news_title = [hit['fields']['title'] for hit in news['result']['hits']]
+                wiki = []
+                for x in data['top3']:
+                    wiki.append(wiki_data_load(data['final'], x))
                 res = await client.post(f"{LLM_URL}/process_llm2", json={'text': transcribed_text, 'summary':data['final'], 'actions_table':data['actions_table'],
-                                                                   'pdf_link':pdf_link, 'pdf_title':pdf_title,
-                                                                   'news_link':news_link, 'news_title':news_title}, timeout=300.0)
+                                                                   'pdf_link':pdf_link, 'pdf_title':pdf_title, 'wiki':wiki, 'top3':data['top3'],
+                                                                   'news_link':news_link, 'news_title':news_title}, headers=headers, timeout=300.0)
                 res.raise_for_status()
                 print('✅ LLM 서버 응답 성공:')
                 final_data = res.json()
@@ -260,9 +267,12 @@ async def process_video2(file: UploadFile = File(...)):
                 news_link = [hit['fields']['link'] for hit in news['result']['hits']]
                 news_title = [hit['fields']['title'] for hit in news['result']['hits']]
                 news_text = [hit['fields']['text'] for hit in news['result']['hits']]
+                wiki = []
+                print(transcribed_text[-100:])
                 res = await client.post(f"{LLM_URL}/process_llm2", json={'text': transcribed_text, 'summary':data['final'], 'actions_table':data['actions_table'],
-                                                                   'pdf_link':pdf_link, 'pdf_title':pdf_title, 'pdf_text':pdf_text,
-                                                                   'news_link':news_link, 'news_title':news_title, 'news_text':news_text }, timeout=300.0)
+                                                                     'wiki':wiki, 'top3':data['top3'],
+                                                                   'pdf_link':pdf_link, 'pdf_title':pdf_title,
+                                                                   'news_link':news_link, 'news_title':news_title,}, timeout=600.0)
                 res.raise_for_status()
                 print('✅ LLM 서버 응답 성공:')
                 final_data = res.json()

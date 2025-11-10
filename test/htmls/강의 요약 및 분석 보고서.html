@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<!-- saved from url=(0047)file:///C:/ai_project01/meeting_rag_report.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>강의 요약 및 분석 보고서</title>
+  <style>
+    :root{
+      --ink:#0b1520;--muted:#6b7a90;--blue:#1e66f5;--blue-50:#eaf3ff;--line:#e6e9ef;
+      --tbl-head:#f6f8fb;--card:#ffffff;
+    }
+    *{box-sizing:border-box}
+    body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR",Arial;margin:32px;color:var(--ink)}
+    .container{max-width:1080px;margin:0 auto}
+    h1.title{font-size:44px;line-height:1.2;margin:0 0 36px;text-align:center;color:var(--blue);font-weight:800;letter-spacing:.5px}
+    h2.sec{font-size:28px;margin:28px 0 12px}
+    .divider{height:1px;background:var(--line);margin:12px 0 20px}
+    .summary-box{background:var(--blue-50);border:1px solid #d5e7ff;border-radius:12px;padding:18px 20px;margin:20px 0 26px}
+    .summary-box h3{margin:0 0 10px;font-size:24px}
+    .summary-box p{margin:0;line-height:1.8}
+
+    .kw-list{display:flex; flex-direction:column; gap:14px; margin:8px 0 32px}
+    .kw-row {display: flex; align-items: flex-start;  gap: 12px;  line-height: 1.6;}
+    .kw-def{flex:1; font-size:14px; color:var(--ink)}
+
+
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 20px}
+    .chip {  padding: 8px 14px;margin-right: 6px; border: 1px solid var(--line);border-radius: 999px; background: #fff; font-size: 13px;}
+    .muted{color:var(--muted);font-size:13px}
+
+    .chipdef{margin-left:8px;margin-right:14px;color:var(--muted);font-size:12px}
+
+    /* 표 */
+    .table-card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    table.data{width:100%;border-collapse:separate;border-spacing:0}
+    table.data thead th{background:var(--tbl-head);font-weight:700;border-bottom:1px solid var(--line);padding:12px;text-align:left}
+    table.data tbody td{border-bottom:1px solid var(--line);padding:12px;vertical-align:top}
+    table.data tbody tr:nth-child(even){background:#fafbfe}
+    .wrap{padding:16px}
+
+    /* 뉴스 */
+    .news-grid{display: grid;  grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;}
+    .card {  display: flex;  flex-direction: column; justify-content: space-between; gap: 10px;background: #fff;border-radius: 14px;padding: 12px;text-decoration: none; color: #111;box-shadow: 0 2px 8px rgba(0,0,0,.06); min-height: 150px;}
+    .card:hover{box-shadow: 0 6px 20px rgba(0,0,0,.12);}
+    .thumb{flex: 0 0 112px;height: 84px; overflow: hidden; border-radius: 10px; background: #eee; display: flex; align-items: center; justify-content: center;}
+    .thumb img{width:100%;height:100%;object-fit:cover}
+    .noimg{font-size:12px;color:#555}
+    .meta h3{font-size:15px;line-height:1.3;margin:0 0 6px 0}
+    .desc{font-size:13px;color:#444;margin:0 0 8px 0}
+    .sub{font-size:12px;color:#666;display:flex;wrap:8px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">강의 요약 및 분석 보고서</h1>
+
+    <div class="summary-box">
+      <h3>강의 요약</h3>
+      <p>5세기 정도에 위만조선이 등장해 중개무역을 통해 발전했으며, 기원전 108년 한나라가 고조선을 함락시키면서 부여, 고구려, 옥저 등이 성장하게 되었다. 부여는 오 부족 연맹체로 구성된 국가로, 왕 중심의 연맹왕국 구조를 공유하며 국가를 운영했고, 형사 취수제나 민며느리제는 여성의 노동력을 중시하는 사회적 맥락에서 출발했다. 충청도와 전라도 지역에서는 벼농사가 활성화되면서 두레 문화와 물 관리 시설이 발달했으며, 기원전 시대의 여러 나라는 청동기와 철기 시대를 배경으로 성장했다.</p>
+    </div>
+
+
+    <h2 class="sec">핵심 키워드</h2>
+    <div class="divider"></div>
+    <div class="kw-list"><div class="kw-row"><span class="chip">세기</span><span class="kw-def">세기(世紀, 영어: century)는 서력기원에서 100년 단위로 연도를 끊은 것을 말한다. 1세기는 1년부터 100년까지를, 2세기는 101년부터 200년까지를 뜻한다.</span></div>
+<div class="kw-row"><span class="chip">정도</span><span class="kw-def">정도에는 다음 뜻이 있다.정도(鄭度)는 삼국 시대의 후한 사람이다.</span></div>
+<div class="kw-row"><span class="chip">위만조선</span><span class="kw-def">위만조선(衛滿朝鮮: 기원전 194년 ~ 기원전 108년) 또는 위씨조선(衛氏朝鮮)은 고조선의 마지막 왕조로, 기원전 194년 연나라에서 망명한 위만이 중화인들과 함께 역성혁명을 일으켜 번조선이자 기자조선의 마지막 왕인 기준을 속여 왕위를 찬탈하고, 기자조선을 빼앗으며 시작됐다.</span></div></div>
+
+    <!--
+    <h2 class="sec">오늘 회의 요약</h2>
+    <div class="divider"></div>
+    <h3>담당자-주제-이슈-액션아이템-기한</h3><div class="table-card"><table class="data">
+<thead><tr><th>담당자</th><th>주제</th><th>이슈</th><th>액션아이템</th><th>기한</th></tr></thead><tbody>
+<tr><td>—</td><td>—</td><td>—</td><td style='word-break:break-word;white-space:pre-wrap'>자, 어떤 나라가 있는지 다음 챕터에서 한번 살펴보도록</td><td>—</td></tr>
+</tbody></table></div>
+    -->
+
+    <h2 class="sec">관련 최신 뉴스</h2>
+    <div class="divider"></div>
+    <div class="news-grid">
+        <a class="card" href="https://washingtondc.korean-culture.org/ko/1845/korea/1282" target="_blank" rel="noopener noreferrer">
+            <div class="thumb"><img src="https://washingtondc.korean-culture.org/CONTENTS/editImage/2999/01/16/20240116105847538479.jpg" alt="역사의 태동(선사시대~고조선)"></div>
+            <div class="meta">
+                <h3>역사의 태동(선사시대~고조선)</h3>
+                <div class="sub">
+                    <span>washingtondc.korean-culture.org</span>
+                    <span>2020-12-07</span>
+                </div>
+            </div>
+        </a>
+
+        <a class="card" href="https://contents.history.go.kr/mobile/kc/view.do?levelId=kc_i100600&code=kc_age_10" target="_blank" rel="noopener noreferrer">
+            <div class="thumb"><img src="https://contents.history.go.kr/resources/mobile/images/common/h1_logo.png" alt="기원전 109년 - 우리역사넷"></div>
+            <div class="meta">
+                <h3>기원전 109년 - 우리역사넷</h3>
+                <div class="sub">
+                    <span>contents.history.go.kr</span>
+                    <span>기원전 109년</span>
+                </div>
+            </div>
+        </a>
+
+        <a class="card" href="https://m.nocutnews.co.kr/news/amp/4491349" target="_blank" rel="noopener noreferrer">
+            <div class="thumb"><img src="https://file2.nocutnews.co.kr/newsroom/image/2015/10/21/20151021080019234686.jpg" alt="일제가 지운 '고조선'의 모든 역사를 되살리다"></div>
+            <div class="meta">
+                <h3>일제가 지운 '고조선'의 모든 역사를 되살리다</h3>
+                <div class="sub">
+                    <span>m.nocutnews.co.kr</span>
+                    <span>날짜 미상</span>
+                </div>
+            </div>
+        </a>
+
+
+    </div>
+
+    <section id="sec-wiki" hidden="">
+    <h2 class="sec">관련 위키</h2>
+    <div class="divider"></div>
+    <div class="table-card"><div class="wrap">
+      <ul class="wiki">
+<li class="muted">링크 없음</li>
+</ul>
+    </div></div>
+    </section>
+
+    <h2 class="sec">관련 논문(PDF)</h2>
+    <div class="divider"></div>
+    <div class="table-card">
+      <table class="data">
+        <thead>
+          <tr>
+            <th style="width:42%">제목/링크</th>
+            <th>요약 / 주요 내용</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td>Motive-level Analysis of Form-functions Association in Korean Folk song<br><span class="src muted">링크: <a href="http://arxiv.org/pdf/2508.10472v1" target="_blank" rel="noopener">http://arxiv.org/pdf/2508.10472v1</a></span></td>
+              <td style="white-space:pre-wrap">- 한국 전통 민요의 형식과 기능 간 연관성을 분석하기 위해 856곡을 대상으로 자동 동기 분할 방법을 제안하였다.
+- Whisper 음성 인식 모델을 조정하여 음악 구절 경계를 자동 탐지하는 방법을 제시하고, 구절 밀도와 길이의 엔트로피 차이를 밝혀냈다.
+- 2017년부터 2023년까지 발표된 연구들로 한국 민요 분석의 다양한 접근법과 보존 노력이 기술되었다.</td>
+            </tr>
+
+            <tr>
+                <td>『삼국유사』 위만조선 관련 기록의 서술 의도<br><span class="src muted">링크: <a href="https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE10475515" target="_blank" rel="noopener">https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE10475515</a></span></td>
+                <td style="white-space:pre-wrap">- 『삼국유사』 내 위만조선 기록의 문헌적 분석과 서술 목적을 탐구하였다. <br>-단군조선과 위만조선을 구분하는 문헌 해석과 역사적 맥락을 제시하며 당시 사료의 의도를 해석한다.<br>-고대 역사 기록의 정치·문화적 배경과 위만조선의 위상을 조명하였다.</td>
+            </tr>
+
+            <tr>
+                <td>한국해상세력 형성과변천(위만조선과 동북아 중개무역)<br><span class="src muted">링크: <a href="https://ilovesea.or.kr/img_upload/20140424/8116F3CEB4D14FA58DA8CB6CBFB58C90.pdf" target="_blank" rel="noopener">https://ilovesea.or.kr/img_upload/20140424/8116F3CEB4D14FA58DA8CB6CBFB58C90.pdf</a></span></td>
+                <td style="white-space:pre-wrap">-위만조선이 동북아 해상세력으로 성장하며 중개무역을 주도한 과정을 분석하였다.<br>-경제적 번영과 문화 교류를 위한 무역로 장악과 한나라 침략에 따른 정치변동을 연구한다.<br>-동북아 해양 네트워크와 고대 국가 발전에 대한 역사적 인식을 제고하였다.</td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">생성 시각: 2025-11-04 10:57</div>
+  </div>
+
+</body></html>

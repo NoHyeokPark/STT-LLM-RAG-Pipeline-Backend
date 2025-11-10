@@ -7,14 +7,16 @@ import uvicorn
 
 app = FastAPI()
 
-app.include_router(members.router, tags=["Members"], prefix="/members")
-app.include_router(whispers.router, tags=["Whispers"], prefix="/whispers")
-app.include_router(reports.router, tags=["Reports"], prefix="/reports")
-
 origins = [
-    "http://localhost:3000",  # 클라이언트 주소
-    "*"                      # 또는 모든 주소 허용
-     ]
+    'https://67102efe0111.ngrok-free.app',
+    "https://awless-kathryn-always.ngrok-free.dev",
+    "http://localhost:3000",
+    '*',
+]
+@app.middleware("http")
+async def log_request(request, call_next):
+    print("📥 Headers:", request.headers)
+    return await call_next(request)
 
 app.add_middleware(
         CORSMiddleware,
@@ -23,6 +25,10 @@ app.add_middleware(
         allow_methods=["*"],
         allow_headers=["*"],
         )
+
+app.include_router(members.router, tags=["Members"], prefix="/members")
+app.include_router(whispers.router, tags=["Whispers"], prefix="/whispers")
+app.include_router(reports.router, tags=["Reports"], prefix="/reports")
 
 @app.get("/test")
 async def hello():

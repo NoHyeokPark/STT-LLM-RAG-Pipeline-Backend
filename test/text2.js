@@ -6,7 +6,7 @@ const FormData = require('form-data');
 const API_ENDPOINT = 'https://172.31.57.147:8001/whispers/process_video2';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-const FILE_PATH = "C:/ai_project01/uploaded_video/0915.WAV"; // 예: 'C:/Users/YourUser/Videos/test.mp4'
+const FILE_PATH = "C:/ai_project01/uploaded_video/임베디드.mp4"; // 예: 'C:/Users/YourUser/Videos/test.mp4'
 
 /**
  * 동영상 파일을 지정된 API 엔드포인트로 업로드하는 함수

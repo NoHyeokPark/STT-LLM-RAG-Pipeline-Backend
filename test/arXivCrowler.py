@@ -40,4 +40,4 @@ def crawl_and_save_arxiv_papers(search_query, max_results=100):
 
 if __name__ == '__main__':
     # 'LLM'을 검색어로 사용하여 최신 논문 100개를 크롤링하고 저장
-    crawl_and_save_arxiv_papers(search_query='Music', max_results=96)
+    crawl_and_save_arxiv_papers(search_query='college', max_results=96)

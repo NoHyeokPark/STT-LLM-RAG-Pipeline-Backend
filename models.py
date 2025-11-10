@@ -51,7 +51,7 @@ class htmlModel(BaseModel):
 
 class TranscriptRequest(BaseModel):
     directory_name: str
-    date: datetime  # "YYYY-MM-DD" 형식
+    timestamp: datetime  # "YYYY-MM-DD" 형식
 
 class LocalFileAdapter:
     """파일 경로를 UploadFile 객체처럼 보이게 만드는 래퍼 클래스"""
