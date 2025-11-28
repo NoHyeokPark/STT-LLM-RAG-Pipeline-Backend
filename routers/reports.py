@@ -15,6 +15,14 @@ router = APIRouter()
 async def hello():
     return "HTML 문서 저장 서비스 API입니다."
 
+@router.get("/echo")
+async def echo(text: str):
+    return text
+
+@router.get("/sum")
+async def sum(a: int, b: int):
+    return a + b
+
 @router.post("/insert", response_description="새로운 HTML 문서 추가", response_model=htmlModel, status_code=status.HTTP_201_CREATED)
 async def create_html_document(html: htmlModel = Body(...)):
     """
